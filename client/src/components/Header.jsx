@@ -9,10 +9,10 @@ export default function Header() {
     <Navbar className="border-b-2">
       <Link
         to="/"
-        className="slef-center whitespace-nowrap text-sm font-semibold dark:text-white"
+        className="self-center whitespace-nowrap text-sm font-semibold dark:text-white"
       >
         <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-gray-300">
-          BBBB{" "}
+          BBYY
         </span>
         Blog
       </Link>
@@ -31,7 +31,7 @@ export default function Header() {
         <Button className="w-12 h-10 hidden sm:inline " color="gray" pill>
           <FaMoon />
         </Button>
-        <Link to="/sign-in">
+        <Link to="/signin">
           <Button gradientDuoTone="purpleToBlue" color="gray" outline>
             Sign In
           </Button>
