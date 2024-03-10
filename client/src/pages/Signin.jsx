@@ -1,10 +1,19 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 export default function Signin() {
   const [formdata, setFormData] = useState({});
-  const [errorMes, setErrorMes] = useState(null);
-  const [loading, isLoading] = useState(false);
+  // const [errorMes, setErrorMes] = useState(null);
+  // const [loading, isLoading] = useState(false);
+  const { loading, error: errorMes } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formdata, [e.target.id]: e.target.value.trim() });
@@ -13,11 +22,13 @@ export default function Signin() {
   const handleForm = async (e) => {
     e.preventDefault();
     if (!formdata.email || !formdata.password) {
-      return setErrorMes("Please Fill All Fields!");
+      // return setErrorMes("Please Fill All Fields!");
+      return dispatch(signInFailure("Please fill all fields!"));
     }
     try {
-      isLoading(true);
-      setErrorMes(null);
+      // isLoading(true);
+      // setErrorMes(null);
+      dispatch(signInStart());
       const res = await fetch("api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -25,16 +36,17 @@ export default function Signin() {
       });
       const data = await res.json();
       if (data.success === false) {
-        isLoading(false);
-        return setErrorMes(data.message);
+        // isLoading(false);
+        // return setErrorMes(data.message);
+        dispatch(signInFailure(data.message));
       }
-      isLoading(false);
+      //isLoading(false);
       if (res.ok === true) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      setErrorMes(error.message);
-      isLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
 
@@ -88,6 +100,7 @@ export default function Signin() {
                 "SIGN IN"
               )}
             </Button>
+            <OAuth />
           </form>
           <div className="mt-5 flex gap-2 text-sm">
             <span>No Account Yet?</span>
