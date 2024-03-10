@@ -38,7 +38,7 @@ export const signin = async (req, res, next) => {
   }
   try {
     const vaildUser = await User.findOne({ email });
-    if (vaildUser === null) {
+    if (!vaildUser) {
       return next(errorHandler(400, "Error Signin Data!"));
     }
     const vaildPass = bcryptjs.compareSync(password, vaildUser.password);
@@ -49,7 +49,7 @@ export const signin = async (req, res, next) => {
     const { password: pass, ...rest } = vaildUser._doc;
     res
       .status(200)
-      .cookie("access token", token, { httpOnly: true })
+      .cookie("access_token", token, { httpOnly: true })
       .json(rest);
   } catch (error) {
     next(error);
