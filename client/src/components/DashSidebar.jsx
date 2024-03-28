@@ -1,6 +1,8 @@
 import { Sidebar } from "flowbite-react";
 import {
+  HiAnnotation,
   HiArrowSmRight,
+  HiChartPie,
   HiDocument,
   HiOutlineUserGroup,
   HiUser,
@@ -44,6 +46,18 @@ export default function DashSidebar() {
     <Sidebar className="w-full md:w-64">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-5">
+          {currentUser && currentUser.isAdmin && (
+            <Link to="/dashboard?tab=dash">
+              <Sidebar.Item
+                active={tab === "dash" || !tab}
+                icon={HiChartPie}
+                labelColor="dark"
+                as="div"
+              >
+                DashBoard
+              </Sidebar.Item>
+            </Link>
+          )}
           <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === "profile"}
@@ -64,15 +78,26 @@ export default function DashSidebar() {
           )}
 
           {currentUser.isAdmin && (
-            <Link to="/dashboard?tab=users">
-              <Sidebar.Item
-                active={tab === "users"}
-                icon={HiOutlineUserGroup}
-                as="div"
-              >
-                Users
-              </Sidebar.Item>
-            </Link>
+            <>
+              <Link to="/dashboard?tab=users">
+                <Sidebar.Item
+                  active={tab === "users"}
+                  icon={HiOutlineUserGroup}
+                  as="div"
+                >
+                  Users
+                </Sidebar.Item>
+              </Link>
+              <Link to="/dashboard?tab=comments">
+                <Sidebar.Item
+                  active={tab === "users"}
+                  icon={HiAnnotation}
+                  as="div"
+                >
+                  Comments
+                </Sidebar.Item>
+              </Link>
+            </>
           )}
           <Sidebar.Item
             icon={HiArrowSmRight}

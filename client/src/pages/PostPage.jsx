@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../components/CallToAction";
 import CommentSection from "../components/CommentSection";
+import PostCard from "../components/PostCard";
 
 export default function PostPage() {
   const { postSlug } = useParams();
@@ -10,6 +11,7 @@ export default function PostPage() {
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
+  const [recentPost, setRecentPost] = useState(null);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -35,6 +37,21 @@ export default function PostPage() {
     fetchPost();
   }, [postSlug]);
 
+  useEffect(() => {
+    try {
+      const fetchRecentPost = async () => {
+        const res = await fetch(`/api/post/getposts?limit=3`);
+        const data = await res.json();
+        if (res.ok) {
+          setRecentPost(data.posts);
+        }
+      };
+      fetchRecentPost();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   if (loading)
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -42,7 +59,7 @@ export default function PostPage() {
       </div>
     );
   return (
-    <main className="p-3 flex flex-col max-w-7xl mx-auto min-h-screen">
+    <main className="p-3 flex flex-col  mx-auto min-h-screen justify-center items-center">
       <h1 className="text-3xl mt-20 p-3 text-center font-serif max-w-2xl mx-auto lg:text-5xl">
         {post && post.title}
       </h1>
@@ -57,7 +74,7 @@ export default function PostPage() {
       <img
         src={post && post.image}
         alt={post && post.title}
-        className="mt-8 max-h-[500px] w-full object-cover p-5"
+        className="mt-8 max-h-[500px] w-max-7xl object-cover p-5"
       />
       <div className="flex justify-between p-3 border-b border-slate-600 mx-auto w-full max-w-2xl">
         <span>{post && new Date(post.createdAt).toLocaleDateString()}</span>
@@ -77,6 +94,14 @@ export default function PostPage() {
       </div>
 
       <CommentSection postId={post._id} />
+
+      <div className=" flex flex-col justify-center items-center mb-5">
+        <h1 className="text-xl mt-5"> Recent Articles</h1>
+        <div className="flex flex-wrap gap-5 mt-5 justify-center">
+          {recentPost &&
+            recentPost.map((post) => <PostCard key={post._id} post={post} />)}
+        </div>
+      </div>
     </main>
   );
 }
